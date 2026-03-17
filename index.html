@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Viraj's Mini Piano</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(180deg, #ffffff 0%, #e9eef6 40%, #d7deea 70%, #c8d0e0 100%);
+            color: #1f2937;
+            overflow-x: hidden;
+        }
+
+        .app {
+            width: 100%;
+            height: 100vh;
+            background: #ffffffcc;
+            backdrop-filter: blur(6px);
+            border-radius: 0;
+            box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+            padding: 24px 32px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .title {
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            margin: 0;
+        }
+
+        .keyboard {
+            position: relative;
+            user-select: none;
+            width: 100%;
+            height: clamp(240px, 60vh, 560px);
+            max-width: 100%;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .white-keys {
+            display: flex;
+            gap: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        .white-key {
+            background: linear-gradient(180deg, #ffffff, #f3f4f6);
+            border-radius: 8px;
+            box-shadow: inset 0 0 0 1px rgba(17, 24, 39, 0.08), 0 8px 16px rgba(0, 0, 0, 0.06);
+            position: relative;
+            cursor: pointer;
+            outline: none;
+            height: 100%;
+            width: calc(100% / 14);
+            flex: 0 0 calc(100% / 14);
+        }
+
+        .white-key:active,
+        .white-key.active {
+            background: linear-gradient(180deg, #f3f4f6, #e5e7eb);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .black-keys {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            pointer-events: none;
+        }
+
+        .black-key {
+            height: 100%;
+            background: linear-gradient(180deg, #111827, #0b1220);
+            border-radius: 6px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+            pointer-events: auto;
+            cursor: pointer;
+            border: none;
+            width: calc((100% / 14) * 0.6);
+            position: absolute;
+            top: 0;
+            transform: translateX(-50%) !important;
+            z-index: 2;
+        }
+
+        .black-key:active,
+        .black-key.active {
+            filter: brightness(1.3);
+        }
+
+        button {
+            appearance: none;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 16px;
+            background: linear-gradient(180deg, #f9fafb, #eef2f7);
+            color: #111827;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        button:active {
+            transform: translateY(0);
+            background: linear-gradient(180deg, #eef2f7, #e5eaf1);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .note-label {
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: bold;
+            display: none;
+            pointer-events: none;
+        }
+
+        .white-key .note-label {
+            color: #111;
+        }
+
+        .black-key .note-label {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="header">
+            <h2 class="title">Viraj's Mini Piano</h2>
+        </div>
+
+        <button onclick="sample()">Sample</button>
+        <button onclick="stopsample()">Stop Sample</button>
+        <button onclick="toggleNotes()">Show/Hide Notes</button>
+        <br><br>
+
+        <div class="keyboard" aria-label="Piano keyboard">
+            <div class="white-keys">
+                <button class="white-key" data-note="c4" onclick="synthPlay('c4',1.0)"><span
+                        class="note-label">C4</span></button>
+                <button class="white-key" data-note="d4" onclick="synthPlay('d4',1.0)"><span
+                        class="note-label">D4</span></button>
+                <button class="white-key" data-note="e4" onclick="synthPlay('e4',1.0)"><span
+                        class="note-label">E4</span></button>
+                <button class="white-key" data-note="f4" onclick="synthPlay('f4',1.0)"><span
+                        class="note-label">F4</span></button>
+                <button class="white-key" data-note="g4" onclick="synthPlay('g4',1.0)"><span
+                        class="note-label">G4</span></button>
+                <button class="white-key" data-note="a4" onclick="synthPlay('a4',1.0)"><span
+                        class="note-label">A4</span></button>
+                <button class="white-key" data-note="b4" onclick="synthPlay('b4',1.0)"><span
+                        class="note-label">B4</span></button>
+                <button class="white-key" data-note="c5" onclick="synthPlay('c5',1.0)"><span
+                        class="note-label">C5</span></button>
+                <button class="white-key" data-note="d5" onclick="synthPlay('d5',1.0)"><span
+                        class="note-label">D5</span></button>
+                <button class="white-key" data-note="e5" onclick="synthPlay('e5',1.0)"><span
+                        class="note-label">E5</span></button>
+                <button class="white-key" data-note="f5" onclick="synthPlay('f5',1.0)"><span
+                        class="note-label">F5</span></button>
+                <button class="white-key" data-note="g5" onclick="synthPlay('g5',1.0)"><span
+                        class="note-label">G5</span></button>
+                <button class="white-key" data-note="a5" onclick="synthPlay('a5',1.0)"><span
+                        class="note-label">A5</span></button>
+                <button class="white-key" data-note="b5" onclick="synthPlay('b5',1.0)"><span
+                        class="note-label">B5</span></button>
+            </div>
+
+            <div class="black-keys">
+                <button class="black-key" style="left: calc((100% / 14) * 1)" data-note="cs4"
+                    onclick="synthPlay('cs4',1.0)"><span class="note-label">C#4</span></button>
+                <button class="black-key" style="left: calc((100% / 14) * 2)" data-note="ds4"
+                    onclick="synthPlay('ds4',1.0)"><span class="note-label">D#4</span></button>
+                <button class="black-key" style="left: calc((100% / 14) * 4)" data-note="fs4"
+                    onclick="synthPlay('fs4',1.0)"><span class="note-label">F#4</span></button>
+                <button class="black-key" style="left: calc((100% / 14) * 5)" data-note="gs4"
+                    onclick="synthPlay('gs4',1.0)"><span class="note-label">G#4</span></button>
+                <button class="black-key" style="left: calc((100% / 14) * 6)" data-note="as4"
+                    onclick="synthPlay('as4',1.0)"><span class="note-label">A#4</span></button>
+                <button class="black-key" style="left: calc((100% / 14) * 8)" data-note="cs5"
+                    onclick="synthPlay('cs5',1.0)"><span class="note-label">C#5</span></button>
+                <button class="black-key" style="left: calc((100% / 14) * 9)" data-note="ds5"
+                    onclick="synthPlay('ds5',1.0)"><span class="note-label">D#5</span></button>
+                <button class="black-key" style="left: calc((100% / 14) * 11)" data-note="fs5"
+                    onclick="synthPlay('fs5',1.0)"><span class="note-label">F#5</span></button>
+                <button class="black-key" style="left: calc((100% / 14) * 12)" data-note="gs5"
+                    onclick="synthPlay('gs5',1.0)"><span class="note-label">G#5</span></button>
+                <button class="black-key" style="left: calc((100% / 14) * 13)" data-note="as5"
+                    onclick="synthPlay('as5',1.0)"><span class="note-label">A#5</span></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var audioCtx;
+        function ensureCtx() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            return audioCtx;
+        }
+
+        let sampleTimeouts = [];
+        let notesVisible = false;
+        function toggleNotes() {
+            notesVisible = !notesVisible;
+            document.querySelectorAll('.note-label').forEach(span => {
+                let key = span.parentElement;
+                if (notesVisible) {
+                    span.style.display = 'block';
+                    span.style.color = key.classList.contains("white-key") ? "#111" : "#fff";
+                } else {
+                    // hide by matching key background
+                    span.style.display = 'block'; // keep span for sample highlights
+                    span.style.color = key.classList.contains("white-key") ? "#ffffff" : "#000000";
+                }
+            });
+        }
+
+function sample() {
+    stopsample();
+
+    // Expert transcription: FIRST 5 LINES of "Demons"
+    // (Accurate melodic intervals, aligned with vocal phrasing)
+    let melody = [
+        // Line 1 — "When the days are cold..."
+        ["g4", 400], ["g4", 350], ["a4", 350], ["g4", 300],
+        ["e4", 450], ["d4", 900],
+
+        // Line 2 — "And the saints we see..."
+        ["g4", 400], ["g4", 350], ["a4", 350], ["g4", 300],
+        ["e4", 450], ["d4", 900],
+
+        // Line 3 — "When your dreams all fail..."
+        ["g4", 400], ["a4", 400], ["c5", 450], ["c5", 350],
+        ["b4", 350], ["a4", 350], ["g4", 900],
+
+        // Line 4 — "And the ones we hail..."
+        ["g4", 400], ["a4", 400], ["c5", 450], ["c5", 350],
+        ["b4", 350], ["a4", 350], ["g4", 900],
+
+        // Line 5 — "Are the worst of all..."
+        ["a4", 350], ["b4", 350], ["c5", 350], ["b4", 350],
+        ["a4", 350], ["g4", 350], ["e4", 1200]
+    ];
+
+    let delay = 0;
+    melody.forEach(([note, dur]) => {
+        let id = setTimeout(() => {
+            synthPlay(note, 0.9);
+            let key = document.querySelector(`[data-note="${note}"]`);
+            if (key) {
+                key.style.background = "red";
+                let label = key.querySelector('.note-label');
+                if (notesVisible && label) label.style.color = "yellow";
+                setTimeout(() => {
+                    if (key.classList.contains("white-key")) key.style.background = "#ffffff";
+                    else key.style.background = "#000000";
+                    if (notesVisible && label) {
+                        label.style.color = key.classList.contains("white-key") ? "#111" : "#fff";
+                    }
+                }, dur * 0.8);
+            }
+        }, delay);
+        sampleTimeouts.push(id);
+        delay += dur;
+    });
+}
+
+
+        function stopsample() {
+            sampleTimeouts.forEach(id => clearTimeout(id));
+            sampleTimeouts = [];
+        }
+
+        function synthPlay(note, volume) {
+            var ctx = ensureCtx();
+            var freqMap = {
+                c4: 261.63, cs4: 277.18, d4: 293.66, ds4: 311.13, e4: 329.63,
+                f4: 349.23, fs4: 369.99, g4: 392.00, gs4: 415.30, a4: 440.00,
+                as4: 466.16, b4: 493.88,
+                c5: 523.25, cs5: 554.37, d5: 587.33, ds5: 622.25, e5: 659.25,
+                f5: 698.46, fs5: 739.99, g5: 783.99, gs5: 830.61, a5: 880.00,
+                as5: 932.33, b5: 987.77
+            };
+            var f = freqMap[note];
+            if (!f) return;
+            var osc = ctx.createOscillator();
+            var gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = f;
+            gain.gain.setValueAtTime(0, ctx.currentTime);
+            var peak = typeof volume === 'number' ? Math.max(0, Math.min(volume, 1)) : 1.0;
+            gain.gain.linearRampToValueAtTime(peak, ctx.currentTime + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.7);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.72);
+        }
+    </script>
+</body>
+
+</html>
