@@ -84,7 +84,6 @@ mini-piano/
 🎵 More songs
 
 🙌 Credits
-Demo melody inspired by "Demons" (Imagine Dragons)
 
 Built by Viraj Ratnakar
 
